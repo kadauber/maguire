@@ -1,196 +1,171 @@
 <!DOCTYPE html>
 <html ng-app='maguireApp'>
+
 <head>
-<title>Maguire</title>
-<script src='https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js'></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+    <title>Maguire</title>
 </head>
+
 <body ng-controller='MaguireController'>
- 
-<table>
-<tr>
-<td>Max hours:</td><td><input ng-model="maxHours" type="text"></td>
-</tr>
-<tr>
-<td>Hours so far:</td><td>{{ accumulatedHours() }}</td>
-</tr>
-<tr>
-<td>Hours remaining:</td><td>{{ hoursRemaining() }}</td>
-</tr>
-</table>
- 
-<table>
-<tr>
-                <td>Day</td>
-                <td>Arrive</td>
-                <td>Time Diff</td>
-                <td>Lunch</td>
-                <td>Time Diff</td>
-                <td>Return</td>
-                <td>Time Diff</td>
-                <td>Leave</td>
-                <td>Total Time</td>
-                <td>Reg Time</td>
-                <td>Overtime</td>
-</tr>
-<tr>
-                <td>Sunday</td>
-                <td><input type="text" ng-model="days.Sunday.arrive"></td>
-                <td>{{ days.Sunday.morning() }}</td>
-                <td><input type="text" ng-model="days.Sunday.lunchStart"></td>
-                <td>{{ days.Sunday.lunch() }}</td>
-                <td><input type="text" ng-model="days.Sunday.lunchEnd"></td>
-                <td>{{ days.Sunday.afternoon() }}</td>
-                <td><input type="text" ng-model="days.Sunday.leave"></td>
-                <td>{{ days.Sunday.total() }}</td>
-                <td>{{ days.Sunday.regular() }}</td>
-                <td>{{ days.Sunday.overtime() }}</td>
-</tr>
-<tr>
-                <td>Monday</td>
-                <td><input type="text" ng-model="days.Monday.arrive"></td>
-                <td>{{ days.Monday.morning() }}</td>
-                <td><input type="text" ng-model="days.Monday.lunchStart"></td>
-                <td>{{ days.Monday.lunch() }}</td>
-                <td><input type="text" ng-model="days.Monday.lunchEnd"></td>
-                <td>{{ days.Monday.afternoon() }}</td>
-                <td><input type="text" ng-model="days.Monday.leave"></td>
-                <td>{{ days.Monday.total() }}</td>
-                <td>{{ days.Monday.regular() }}</td>
-                <td>{{ days.Monday.overtime() }}</td>
-</tr>
-<tr>
-                <td>Tuesday</td>
-                <td><input type="text" ng-model="days.Tuesday.arrive"></td>
-                <td>{{ days.Tuesday.morning() }}</td>
-                <td><input type="text" ng-model="days.Tuesday.lunchStart"></td>
-                <td>{{ days.Tuesday.lunch() }}</td>
-                <td><input type="text" ng-model="days.Tuesday.lunchEnd"></td>
-                <td>{{ days.Tuesday.afternoon() }}</td>
-                <td><input type="text" ng-model="days.Tuesday.leave"></td>
-                <td>{{ days.Tuesday.total() }}</td>
-                <td>{{ days.Tuesday.regular() }}</td>
-                <td>{{ days.Tuesday.overtime() }}</td>
-</tr>
-<tr>
-                <td>Wednesday</td>
-                <td><input type="text" ng-model="days.Wednesday.arrive"></td>
-                <td>{{ days.Wednesday.morning() }}</td>
-                <td><input type="text" ng-model="days.Wednesday.lunchStart"></td>
-                <td>{{ days.Wednesday.lunch() }}</td>
-                <td><input type="text" ng-model="days.Wednesday.lunchEnd"></td>
-                <td>{{ days.Wednesday.afternoon() }}</td>
-                <td><input type="text" ng-model="days.Wednesday.leave"></td>
-                <td>{{ days.Wednesday.total() }}</td>
-                <td>{{ days.Wednesday.regular() }}</td>
-                <td>{{ days.Wednesday.overtime() }}</td>
-</tr>
-<tr>
-                <td>Thursday</td>
-                <td><input type="text" ng-model="days.Thursday.arrive"></td>
-                <td>{{ days.Thursday.morning() }}</td>
-                <td><input type="text" ng-model="days.Thursday.lunchStart"></td>
-                <td>{{ days.Thursday.lunch() }}</td>
-                <td><input type="text" ng-model="days.Thursday.lunchEnd"></td>
-                <td>{{ days.Thursday.afternoon() }}</td>
-                <td><input type="text" ng-model="days.Thursday.leave"></td>
-                <td>{{ days.Thursday.total() }}</td>
-                <td>{{ days.Thursday.regular() }}</td>
-                <td>{{ days.Thursday.overtime() }}</td>
-</tr>
-<tr>
-                <td>Friday</td>
-                <td><input type="text" ng-model="days.Friday.arrive"></td>
-                <td>{{ days.Friday.morning() }}</td>
-                <td><input type="text" ng-model="days.Friday.lunchStart"></td>
-                <td>{{ days.Friday.lunch() }}</td>
-                <td><input type="text" ng-model="days.Friday.lunchEnd"></td>
-                <td>{{ days.Friday.afternoon() }}</td>
-                <td><input type="text" ng-model="days.Friday.leave"></td>
-                <td>{{ days.Friday.total() }}</td>
-                <td>{{ days.Friday.regular() }}</td>
-                <td>{{ days.Friday.overtime() }}</td>
-</tr>
-</table>
- 
-<script>
-angular.module('maguireApp', []).controller('MaguireController', MaguireController);
- 
-function MaguireController ($scope) {
-                $scope.maxHours = 50;
-                $scope.days = {};
-                $scope.accumulatedHours = accumulatedHours;
-                $scope.hoursRemaining = hoursRemaining;
-                $scope.validateMoment = validateMoment;
-               
-                function accumulatedHours() {
-                                return _.reduce($scope.days, function (memo, day) { return memo + day.total(); }, 0);
-                }
-                                               
-                function hoursRemaining() {
-                                var remaining = $scope.maxHours - $scope.accumulatedHours();
-                                return remaining === 0 ? 0 : remaining || "cannot calculate";
-                }
-               
-                function validateMoment (time) {
-                                return parseMoment(time).isValid();
-                }
-               
-                //////// Helpers (this should probably be a service)
-               
-                var standardTimeFormat = "YYYY-MM-DD hh:mma";
-               
-                function timeDifference (time1, time2) {
-                                var response = " invalid ";
-                                               
-                                if (!$scope.validateMoment(time1)) {
-                                                response.splice(0, 0, "<-");
-                                } else {
-                                                if (!$scope.validateMoment(time2)) {
-                                                                response = response + "->";
-                                                } else {
-                                                                response = parseMoment(time1).diff(parseMoment(time2), 'hours', true);
-                                                }
-                                }
-                               
-                                return response;
-                }
-               
-                function formatTime (time) {
-                                return time.format(standardTimeFormat);
-                }
-               
-                function parseMoment (time) {
-                                return moment(time, standardTimeFormat) || moment(time);
-                }
-                               
-                //////// Initialization (this should probably be config or something)
-               
-                var dayNames = [ "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday" ];
-               
-                _.each(dayNames, function (dayName, dayIndex) {
-                                $scope.days[dayName] = {
-                                                "arrive":     formatTime(moment().startOf('week').add(dayIndex, 'days').add(8, 'hours')),
-                                                "lunchStart": formatTime(moment().startOf('week').add(dayIndex, 'days').add(12, 'hours')),
-                                                "lunchEnd":   formatTime(moment().startOf('week').add(dayIndex, 'days').add(13, 'hours')),
-                                                "leave":      formatTime(moment().startOf('week').add(dayIndex, 'days').add(19, 'hours')),
-                                                                                               
-                                                "morning":    function () { return timeDifference(this.lunchStart, this.arrive)     },
-                                                "lunch":      function () { return timeDifference(this.lunchEnd,   this.lunchStart) },
-                                                "afternoon":  function () { return timeDifference(this.leave,      this.lunchEnd)   },
-                                               
-                                                "total":      function () { return this.morning() + this.afternoon(); },
-                                                "regular":    function () { return Math.min(this.total(), 8) },
-                                                "overtime":   function () { return this.total() - this.regular(); }
-                                }
-                });
-               
-                $scope.days.Sunday.arrive =       formatTime(moment().startOf('week').add(8, 'hours'));
-                $scope.days.Sunday.lunchStart = formatTime(moment().startOf('week').add(8, 'hours'));
-                $scope.days.Sunday.lunchEnd =                formatTime(moment().startOf('week').add(8, 'hours'));
-                $scope.days.Sunday.leave =                        formatTime(moment().startOf('week').add(8, 'hours'));
-}
-</script>
+    <table>
+        <tr>
+            <td>Max hours:</td>
+            <td>
+                <input ng-model="maxHours" type="text">
+            </td>
+        </tr>
+        <tr>
+            <td>Hours so far:</td>
+            <td>{{ accumulatedHours() }}</td>
+        </tr>
+        <tr>
+            <td>Hours remaining:</td>
+            <td>{{ hoursRemaining() }}</td>
+        </tr>
+    </table>
+    <table>
+        <tr>
+            <td>Day</td>
+            <td>Arrive</td>
+            <td>Time Diff</td>
+            <td>Lunch</td>
+            <td>Time Diff</td>
+            <td>Return</td>
+            <td>Time Diff</td>
+            <td>Leave</td>
+            <td>Total Time</td>
+            <td>Reg Time</td>
+            <td>Overtime</td>
+        </tr>
+        <tr>
+            <td>Sunday</td>
+            <td>
+                <input type="text" ng-model="days.Sunday.arrive">
+            </td>
+            <td>{{ days.Sunday.morning() }}</td>
+            <td>
+                <input type="text" ng-model="days.Sunday.lunchStart">
+            </td>
+            <td>{{ days.Sunday.lunch() }}</td>
+            <td>
+                <input type="text" ng-model="days.Sunday.lunchEnd">
+            </td>
+            <td>{{ days.Sunday.afternoon() }}</td>
+            <td>
+                <input type="text" ng-model="days.Sunday.leave">
+            </td>
+            <td>{{ days.Sunday.total() }}</td>
+            <td>{{ days.Sunday.regular() }}</td>
+            <td>{{ days.Sunday.overtime() }}</td>
+        </tr>
+        <tr>
+            <td>Monday</td>
+            <td>
+                <input type="text" ng-model="days.Monday.arrive">
+            </td>
+            <td>{{ days.Monday.morning() }}</td>
+            <td>
+                <input type="text" ng-model="days.Monday.lunchStart">
+            </td>
+            <td>{{ days.Monday.lunch() }}</td>
+            <td>
+                <input type="text" ng-model="days.Monday.lunchEnd">
+            </td>
+            <td>{{ days.Monday.afternoon() }}</td>
+            <td>
+                <input type="text" ng-model="days.Monday.leave">
+            </td>
+            <td>{{ days.Monday.total() }}</td>
+            <td>{{ days.Monday.regular() }}</td>
+            <td>{{ days.Monday.overtime() }}</td>
+        </tr>
+        <tr>
+            <td>Tuesday</td>
+            <td>
+                <input type="text" ng-model="days.Tuesday.arrive">
+            </td>
+            <td>{{ days.Tuesday.morning() }}</td>
+            <td>
+                <input type="text" ng-model="days.Tuesday.lunchStart">
+            </td>
+            <td>{{ days.Tuesday.lunch() }}</td>
+            <td>
+                <input type="text" ng-model="days.Tuesday.lunchEnd">
+            </td>
+            <td>{{ days.Tuesday.afternoon() }}</td>
+            <td>
+                <input type="text" ng-model="days.Tuesday.leave">
+            </td>
+            <td>{{ days.Tuesday.total() }}</td>
+            <td>{{ days.Tuesday.regular() }}</td>
+            <td>{{ days.Tuesday.overtime() }}</td>
+        </tr>
+        <tr>
+            <td>Wednesday</td>
+            <td>
+                <input type="text" ng-model="days.Wednesday.arrive">
+            </td>
+            <td>{{ days.Wednesday.morning() }}</td>
+            <td>
+                <input type="text" ng-model="days.Wednesday.lunchStart">
+            </td>
+            <td>{{ days.Wednesday.lunch() }}</td>
+            <td>
+                <input type="text" ng-model="days.Wednesday.lunchEnd">
+            </td>
+            <td>{{ days.Wednesday.afternoon() }}</td>
+            <td>
+                <input type="text" ng-model="days.Wednesday.leave">
+            </td>
+            <td>{{ days.Wednesday.total() }}</td>
+            <td>{{ days.Wednesday.regular() }}</td>
+            <td>{{ days.Wednesday.overtime() }}</td>
+        </tr>
+        <tr>
+            <td>Thursday</td>
+            <td>
+                <input type="text" ng-model="days.Thursday.arrive">
+            </td>
+            <td>{{ days.Thursday.morning() }}</td>
+            <td>
+                <input type="text" ng-model="days.Thursday.lunchStart">
+            </td>
+            <td>{{ days.Thursday.lunch() }}</td>
+            <td>
+                <input type="text" ng-model="days.Thursday.lunchEnd">
+            </td>
+            <td>{{ days.Thursday.afternoon() }}</td>
+            <td>
+                <input type="text" ng-model="days.Thursday.leave">
+            </td>
+            <td>{{ days.Thursday.total() }}</td>
+            <td>{{ days.Thursday.regular() }}</td>
+            <td>{{ days.Thursday.overtime() }}</td>
+        </tr>
+        <tr>
+            <td>Friday</td>
+            <td>
+                <input type="text" ng-model="days.Friday.arrive">
+            </td>
+            <td>{{ days.Friday.morning() }}</td>
+            <td>
+                <input type="text" ng-model="days.Friday.lunchStart">
+            </td>
+            <td>{{ days.Friday.lunch() }}</td>
+            <td>
+                <input type="text" ng-model="days.Friday.lunchEnd">
+            </td>
+            <td>{{ days.Friday.afternoon() }}</td>
+            <td>
+                <input type="text" ng-model="days.Friday.leave">
+            </td>
+            <td>{{ days.Friday.total() }}</td>
+            <td>{{ days.Friday.regular() }}</td>
+            <td>{{ days.Friday.overtime() }}</td>
+        </tr>
+    </table>
+    <script src='https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js'></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+    <script src="index.js"></script>
 </body>
 </html>
