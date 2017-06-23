@@ -1,5 +1,5 @@
 (function (angular) {
 
-angular.module('maguireApp', []);
+var maguireApp = angular.module('maguireApp', ['TimeManipulatorService']);
 
 })(window.angular);

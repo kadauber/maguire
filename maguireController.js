@@ -3,12 +3,14 @@
 
 angular.module('maguireApp').controller('MaguireController', MaguireController);
 
-function MaguireController($scope) {
+function MaguireController($scope, TimeManipulator) {
     $scope.maxHours = 50;
     $scope.days = {};
     $scope.accumulatedHours = accumulatedHours;
     $scope.hoursRemaining = hoursRemaining;
     $scope.validateMoment = validateMoment;
+
+    TimeManipulator.setStandardTimeFormat("YYYY-MM-DD hh:mma");
 
     function accumulatedHours() {
         return _.reduce($scope.days, function(memo, day) {
@@ -22,35 +24,7 @@ function MaguireController($scope) {
     }
 
     function validateMoment(time) {
-        return parseMoment(time).isValid();
-    }
-
-    //////// Helpers (this should probably be a service)
-
-    var standardTimeFormat = "YYYY-MM-DD hh:mma";
-
-    function timeDifference(time1, time2) {
-        var response = " invalid ";
-
-        if (!$scope.validateMoment(time1)) {
-            response.splice(0, 0, "<-");
-        } else {
-            if (!$scope.validateMoment(time2)) {
-                response = response + "->";
-            } else {
-                response = parseMoment(time1).diff(parseMoment(time2), 'hours', true);
-            }
-        }
-
-        return response;
-    }
-
-    function formatTime(time) {
-        return time.format(standardTimeFormat);
-    }
-
-    function parseMoment(time) {
-        return moment(time, standardTimeFormat) || moment(time);
+        return TimeManipulator.validateMoment(time);
     }
 
     //////// Initialization (this should probably be config or something)
@@ -59,19 +33,19 @@ function MaguireController($scope) {
 
     _.each(dayNames, function(dayName, dayIndex) {
         $scope.days[dayName] = {
-            "arrive": formatTime(moment().startOf('week').add(dayIndex, 'days').add(8, 'hours')),
-            "lunchStart": formatTime(moment().startOf('week').add(dayIndex, 'days').add(12, 'hours')),
-            "lunchEnd": formatTime(moment().startOf('week').add(dayIndex, 'days').add(13, 'hours')),
-            "leave": formatTime(moment().startOf('week').add(dayIndex, 'days').add(19, 'hours')),
+            "arrive": TimeManipulator.formatTime(moment().startOf('week').add(dayIndex, 'days').add(8, 'hours')),
+            "lunchStart": TimeManipulator.formatTime(moment().startOf('week').add(dayIndex, 'days').add(12, 'hours')),
+            "lunchEnd": TimeManipulator.formatTime(moment().startOf('week').add(dayIndex, 'days').add(13, 'hours')),
+            "leave": TimeManipulator.formatTime(moment().startOf('week').add(dayIndex, 'days').add(19, 'hours')),
 
             "morning": function() {
-                return timeDifference(this.lunchStart, this.arrive)
+                return TimeManipulator.timeDifference(this.lunchStart, this.arrive)
             },
             "lunch": function() {
-                return timeDifference(this.lunchEnd, this.lunchStart)
+                return TimeManipulator.timeDifference(this.lunchEnd, this.lunchStart)
             },
             "afternoon": function() {
-                return timeDifference(this.leave, this.lunchEnd)
+                return TimeManipulator.timeDifference(this.leave, this.lunchEnd)
             },
 
             "total": function() {
@@ -86,10 +60,10 @@ function MaguireController($scope) {
         }
     });
 
-    $scope.days.Sunday.arrive = formatTime(moment().startOf('week').add(8, 'hours'));
-    $scope.days.Sunday.lunchStart = formatTime(moment().startOf('week').add(8, 'hours'));
-    $scope.days.Sunday.lunchEnd = formatTime(moment().startOf('week').add(8, 'hours'));
-    $scope.days.Sunday.leave = formatTime(moment().startOf('week').add(8, 'hours'));
+    $scope.days.Sunday.arrive = TimeManipulator.formatTime(moment().startOf('week').add(8, 'hours'));
+    $scope.days.Sunday.lunchStart = TimeManipulator.formatTime(moment().startOf('week').add(8, 'hours'));
+    $scope.days.Sunday.lunchEnd = TimeManipulator.formatTime(moment().startOf('week').add(8, 'hours'));
+    $scope.days.Sunday.leave = TimeManipulator.formatTime(moment().startOf('week').add(8, 'hours'));
 }
 
 })(window.angular);
