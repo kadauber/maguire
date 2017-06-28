@@ -1,0 +1,28 @@
+{
+    "folders":
+    [
+        {
+            "path": ".",
+            "name": "config",
+            "file_exclude_patterns": [ 
+                "*.js.map" 
+                ,"*.js"
+                ,".gitignore"
+                ,"package-lock.json"
+            ],
+            "folder_exclude_patterns": [
+                "node_modules"
+                ,".tscache"
+                ,"public"
+            ]
+        },
+        {
+            "path": "public",
+            "name": "app",
+            "file_exclude_patterns": [ 
+                "*.js.map"
+                // ,"*.js" 
+            ]
+        }
+    ]
+}

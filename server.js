@@ -8,4 +8,4 @@ app.use(express.static('public'));
 app.listen(3000, function () {
     console.log("listening on port 3000");
 });
-//# sourceMappingURL=app.js.map
+//# sourceMappingURL=server.js.map

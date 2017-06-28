@@ -9,7 +9,7 @@ module.exports = function (grunt) {
             }
         },
         watch: {
-            files: tsconfigData.include,
+            files: [ tsconfigData.include, "tsconfig.json" ],
             tasks: ['ts']
         }
     });
